@@ -65,13 +65,14 @@ export const Graph = ({stateName}) => {
                     <CartesianGrid opacity={0.5} vertical={false}/>
                     <Tooltip content={<CustomTooltip/>}/>
                     <Legend/>
+                    <Line yAxisId={2} data={snap.stateCases[stateName]} type="monotone" dataKey='cases_new'
+                          stroke={color.gray} activeDot={{r: 8}}/>
                     {/*<Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Total hospitalisation' stroke={color.red} activeDot={{r: 8}}/>*/}
                     <Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone"
                           dataKey='Covid hospitalisation' stroke={color.darkGreen} activeDot={{r: 8}}/>
                     {/*<Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Non-Covid hospitalisation' stroke={color.subscriptionYellow} activeDot={{r: 8}}/>*/}
 
-                    <Line yAxisId={2} data={snap.stateCases[stateName]} type="monotone" dataKey='cases_new'
-                          stroke={color.gray} activeDot={{r: 8}}/>
+
 
                     <Line yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 1 total"
                           stroke="#8884d8" activeDot={{r: 8}}/>

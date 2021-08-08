@@ -1,4 +1,4 @@
-import {malaysiaPopulation, stateArray} from "./globalState";
+import {malaysiaPopulation, stateArray, StateName} from "./globalState";
 import { startVaccineYear} from "../config";
 import {format, parseISO} from "date-fns";
 
@@ -54,7 +54,7 @@ export const stateSorter = (data, addPercentage = false) => {
             } else {
                 updatedData = {...currentData}
             }
-            
+
             if (foundState) {
                 sortedData[foundState].push(updatedData)
             } else {
