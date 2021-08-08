@@ -1,4 +1,4 @@
-import {proxy} from "valtio";
+import {proxy, subscribe} from "valtio";
 
 export const StateName = Object.freeze({
     JOHOR: 'Johor',
@@ -39,50 +39,103 @@ export const stateArray = [
     'W.P. Putrajaya',
 ]
 
-export const stateSorter = (data) => {
-    const sortedData = {
-        'Johor': [],
-        'Kedah': [],
-        'Kelantan': [],
-        'Melaka': [],
-        'Negeri Sembilan': [],
-        'Pahang': [],
-        'Perak': [],
-        'Perlis': [],
-        'Pulau Pinang': [],
-        'Sabah': [],
-        'Sarawak': [],
-        'Selangor': [],
-        'Terengganu': [],
-        'W.P. Kuala Lumpur': [],
-        'W.P. Labuan': [],
-        'W.P. Putrajaya': [],
+
+
+export const malaysiaPopulation = {
+    'Johor':{
+        total: 3781000,
+        adult: 2711900,
+        elderly: 428700
+    },
+    'Kedah':{
+        total: 2185100,
+        adult: 1540600,
+        elderly: 272500
+    },
+    'Kelantan':{
+        total: 1906700,
+        adult: 1236200,
+        elderly: 194100
+    },
+    'Melaka':{
+        total: 932700,
+        adult: 677400,
+        elderly: 118500
+    },
+    'Negeri Sembilan':{
+        total: 1128800,
+        adult: 814400,
+        elderly: 145000
+    },
+    'Pahang':{
+        total: 1678700,
+        adult: 1175800,
+        elderly: 190200
+    },
+    'Perak':{
+        total: 2510300,
+        adult: 1862700,
+        elderly: 397300
+    },
+    'Perlis':{
+        total: 254900,
+        adult: 181200,
+        elderly: 35100
+    },
+    'Pulau Pinang':{
+        total: 1773600,
+        adult: 1367200,
+        elderly: 239200
+    },
+    'Sabah':{
+        total: 3908500,
+        adult: 2758400,
+        elderly: 238900
+    },
+    'Selangor':{
+        total: 6538000,
+        adult: 4747900,
+        elderly: 575800
+    },
+    'Sarawak':{
+        total: 2816500,
+        adult: 2042700,
+        elderly: 332800
+    },
+    'Terengganu':{
+        total: 1259300,
+        adult: 808400,
+        elderly: 115200
+    },
+    'W.P. Kuala Lumpur':{
+        total: 1773700,
+        adult: 1348600,
+        elderly: 205800
+    },
+    'W.P. Labuan':{
+        total: 99600,
+        adult: 68500,
+        elderly: 7900
+    },
+    'W.P. Putrajaya':{
+        total: 110000,
+        adult: 67700,
+        elderly: 5000
+    },
+    Malaysia: {
+        total: 32657400,
+        adult: 23409600,
+        elderly: 3502000
     }
-
-    const dataLength = data.length
-
-    //iterate the data and move it to each state
-    let i = 0
-    while (i < dataLength) {
-
-        const currentData = data[i]
-
-        const foundState = stateArray.find(state => state === currentData.state)
-
-        if (foundState) {
-            sortedData[foundState].push(currentData)
-        } else {
-            console.log(i,' = ', currentData)
-        }
-
-        ++i
-    }
-
-    return sortedData
 }
 
 export const globalState = proxy ({
-    stateVax: [],
+    stateVax: {},
     nationalVax: [],
-    separatedStateVax: {}
+    nationalCases: [],
+    stateCases: {},
+    nationalDeath: [],
+    stateDeaths: {},
+    stateIcu: {},
+    stateHospital: {}
 })

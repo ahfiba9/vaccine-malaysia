@@ -3,57 +3,129 @@ import Image from 'next/image'
 
 import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";
-import {citfBaseUrl} from "../config";
-import {useEffect} from "react";
-import {globalState, stateArray, StateName, stateSorter} from "../library/globalState";
+import {citfBaseUrl, kkmBaseUrl} from "../config";
+import {useEffect, useState} from "react";
+import {globalState, stateArray, StateName } from "../library/globalState";
 import {useSnapshot} from "valtio";
+import {LineChart, CartesianGrid, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {format, parseISO} from "date-fns";
+import {hospitalSorter, stateSorter} from "../library/dataProcessor";
+import color from "../library/color";
+import {Graph} from "../components/Graph";
+import graphStyles from '../styles/Graph.module.css'
 
-export default function Home({stateVaccination, nationalVaccination, malaysiaPopulation}) {
+export default function Home({
+                                 stateVaccination,
+                                 nationalVaccination,
+                                 stateCases,
+                                 nationalCases,
+                                 stateDeaths,
+                                 nationalDeaths,
+                                 hospitalData,
+                                 icuData,
+                             }
+) {
+
     const snap = useSnapshot(globalState)
 
-    console.log(stateVaccination)
+    // console.log(stateVaccination)
     // console.log(nationalVaccination)
-    // console.log(malaysiaPopulation)
 
     useEffect(() => {
-        globalState.stateVax = stateSorter(stateVaccination.data)
-        globalState.nationalVax = nationalVaccination
+        globalState.stateVax = stateSorter(stateVaccination.data, true)
+        globalState.nationalVax = nationalVaccination.data
+        globalState.nationalCases = nationalCases.data
+        globalState.stateCases = stateSorter(stateCases.data, false)
+        globalState.nationalDeath = nationalDeaths.data
+        globalState.stateDeaths = stateSorter(stateDeaths.data,false)
+        globalState.stateHospital = hospitalSorter(hospitalData.data, false)
+        globalState.stateIcu = hospitalSorter(icuData.data, true)
 
-    },[stateVaccination, nationalVaccination, malaysiaPopulation])
 
-    console.log('in global state, state vax = ', snap.stateVax)
-    console.log('in global state, national vax = ', snap.nationalVax)
+    }, [stateVaccination,
+        nationalVaccination,
+        stateCases,
+        nationalCases,
+        stateDeaths,
+        nationalDeaths,
+        hospitalData,
+        icuData,
+       ])
+
+
 
   return (
-    <div>
+    <>
       <Head>
           <title>KKM tracker</title>
           <meta name={'keywords'} content={'covid tracker , dashboard'}/>
       </Head>
 
-      <h1>Welcome to Next</h1>
-    </div>
+        { Object.keys(snap.stateVax).length > 0 &&
+        <div className={graphStyles.grid}>
+            {stateArray.map((state) => (
+                <Graph key={state} stateName={state} />
+            ))}
+        </div>
+        }
+    </>
   )
 }
 
+
 export const getStaticProps = async () => {
     try {
+        // vaccination data
         const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)
         const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
-        //TO DO make this as static data in JSON format. save api call.
-        const malaysiaPopulationData = await getApi(`${citfBaseUrl}/static/population.csv`)
 
         const stateVaccination = readString(dataVaxState, {header: true})
         const nationalVaccination = readString(dataVaxNational, {header: true})
-        const malaysiaPopulation = readString(malaysiaPopulationData, {header: true})
 
-        console.log('malaysia population = ', malaysiaPopulation)
+        // registration data
+        // const dataVaxRegState = await getApi(`${citfBaseUrl}/registration/vaxreg_state.csv`)
+        // const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
+        //
+        // const stateRegistration = readString(dataVaxRegState, {header: true})
+        // const nationalRegistration = readString(dataVaxRegNational, {header: true})
+
+        // cases data
+        const stateCasesData = await getApi(`${kkmBaseUrl}/cases_state.csv`)
+        const nationalCasesData = await getApi(`${kkmBaseUrl}/cases_malaysia.csv`)
+
+        const stateCases = readString(stateCasesData, {header: true})
+        const nationalCases = readString(nationalCasesData, {header: true})
+
+        // deaths data
+        const stateDeathsData = await getApi(`${kkmBaseUrl}/deaths_state.csv`)
+        const nationalDeathsData = await getApi(`${kkmBaseUrl}/deaths_malaysia.csv`)
+
+        const stateDeaths = readString(stateDeathsData, {header: true})
+        const nationalDeaths = readString(nationalDeathsData, {header: true})
+
+        // hospital and icu data
+        const hospitalDataRaw = await getApi(`${kkmBaseUrl}/hospital.csv`)
+        const icuDataRaw = await getApi(`${kkmBaseUrl}/icu.csv`)
+
+        const hospitalData = readString(hospitalDataRaw, {header: true})
+        const icuData = readString(icuDataRaw, {header: true})
+
+        // tests data
+        // const nationalTestsData = await getApi(`${kkmBaseUrl}/tests_malaysia.csv`)
+        //
+        // const nationalTests = readString(nationalTestsData, {header: true})
+
 
         return {
             props : {
                 stateVaccination,
                 nationalVaccination,
-                malaysiaPopulation
+                stateCases,
+                nationalCases,
+                stateDeaths,
+                nationalDeaths,
+                hospitalData,
+                icuData,
             }
         }
     } catch {
