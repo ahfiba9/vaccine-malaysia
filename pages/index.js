@@ -7,12 +7,9 @@ import {citfBaseUrl, kkmBaseUrl} from "../config";
 import {useEffect, useState} from "react";
 import {globalState, stateArray, StateName } from "../library/globalState";
 import {useSnapshot} from "valtio";
-import {LineChart, CartesianGrid, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {format, parseISO} from "date-fns";
 import {hospitalSorter, stateSorter} from "../library/dataProcessor";
 import color from "../library/color";
 import {Graph} from "../components/Graph";
-import graphStyles from '../styles/Graph.module.css'
 
 export default function Home({
                                  stateVaccination,
@@ -62,7 +59,7 @@ export default function Home({
       </Head>
 
         { Object.keys(snap.stateVax).length > 0 &&
-        <div className={graphStyles.grid}>
+        <div>
             {stateArray.map((state) => (
                 <Graph key={state} stateName={state} />
             ))}

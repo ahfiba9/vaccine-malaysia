@@ -41,7 +41,7 @@ export const Graph = ({stateName}) => {
         <>
             <p>{stateName}</p>
 
-            <ResponsiveContainer width={800} aspect={1}>
+            <ResponsiveContainer width={800} height={400}>
                 <LineChart margin={{top: 5, right: 30, left: 20, bottom: 5}} data={snap.stateVax[stateName]}>
                     <XAxis
                         dataKey="date"
@@ -65,19 +65,23 @@ export const Graph = ({stateName}) => {
                     <CartesianGrid opacity={0.5} vertical={false}/>
                     <Tooltip content={<CustomTooltip/>}/>
                     <Legend/>
-                    <Line yAxisId={2} data={snap.stateCases[stateName]} type="monotone" dataKey='cases_new'
+                    <Line dot={false} yAxisId={2} data={snap.stateCases[stateName]} type="monotone" dataKey='cases_new'
                           stroke={color.gray} activeDot={{r: 8}}/>
-                    {/*<Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Total hospitalisation' stroke={color.red} activeDot={{r: 8}}/>*/}
-                    <Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone"
-                          dataKey='Covid hospitalisation' stroke={color.darkGreen} activeDot={{r: 8}}/>
-                    {/*<Line yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Non-Covid hospitalisation' stroke={color.subscriptionYellow} activeDot={{r: 8}}/>*/}
+                    {/*<Line dot={false} yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Total hospitalisation' stroke={color.red} activeDot={{r: 8}}/>*/}
+                    <Line dot={false} yAxisId={1} data={snap.stateHospital[stateName]} type="monotone"
+                          dataKey='Covid hospitalisation' stroke={color.black} activeDot={{r: 8}}/>
+                    <Line dot={false} yAxisId={1} data={snap.stateIcu[stateName]} type="monotone"
+                          dataKey='Covid ICU' stroke={color.red} activeDot={{r: 8}}/>
+                    <Line dot={false} yAxisId={1} data={snap.stateIcu[stateName]} type="monotone"
+                          dataKey='ICU Usage' stroke={color.grey} activeDot={{r: 8}}/>
+                    {/*<Line dot={false} yAxisId={1} data={snap.stateHospital[stateName]} type="monotone" dataKey='Non-Covid hospitalisation' stroke={color.subscriptionYellow} activeDot={{r: 8}}/>*/}
 
 
 
-                    <Line yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 1 total"
+                    <Line dot={false} yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 1 total"
                           stroke="#8884d8" activeDot={{r: 8}}/>
-                    <Line yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 2 total"
-                          stroke="#fc0366" activeDot={{r: 8}}/>
+                    <Line dot={false} yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 2 total"
+                          stroke={color.primary} activeDot={{r: 8}}/>
                 </LineChart>
             </ResponsiveContainer>
         </>

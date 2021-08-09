@@ -128,12 +128,12 @@ export const hospitalSorter = (data, isIcu = false) => {
 
                 updatedData = {
                     ...currentData,
-                    icuCovidPuiPercentage,
-                    icuNonCovidPercentage,
-                    icuUsagePercentage,
-                    ventCovidPuiPercentage,
-                    ventNonCovidPercentage,
-                    ventUsagePercentage
+                    'Covid ICU': icuCovidPuiPercentage,
+                    'Non-Covid ICU': icuNonCovidPercentage,
+                    'ICU Usage': icuUsagePercentage,
+                    'Covid Ventilator': ventCovidPuiPercentage,
+                    'Non-Covid Ventilator': ventNonCovidPercentage,
+                    'Ventilator Usage': ventUsagePercentage
                 }
             } else {
                 const hospCovidAndPui = parseInt(currentData.hosp_covid) + parseInt(currentData.hosp_pui)
@@ -152,6 +152,7 @@ export const hospitalSorter = (data, isIcu = false) => {
                 }
             }
 
+            if (isIcu) console.log(updatedData)
 
             if (foundState) {
                 sortedData[foundState].push(updatedData)
