@@ -4,7 +4,7 @@ import {format, parseISO} from "date-fns";
 import color from "../library/color";
 import {useSnapshot} from "valtio";
 
-function CustomTooltip({ active, payload, label }) {
+export function CustomTooltip({ active, payload, label }) {
     if (active) {
         return (
             <div className="tooltip">
@@ -40,7 +40,7 @@ export const GraphNational = () => {
     const showPercentageLine = totalReg || elderlyReg || above18Reg || under18Reg || dose1 || dose2
 
     return (
-        <ResponsiveContainer width={'100%'} aspect={1} className={'p-10'}>
+        <ResponsiveContainer width={'100%'} height={500}>
             {/*<p className={'text-center'}>{'Malaysia'}</p>*/}
             <LineChart margin={{top: 15, right: 30, left: 20, bottom: 5}} data={snap.nationalRegistration}>
                 <XAxis

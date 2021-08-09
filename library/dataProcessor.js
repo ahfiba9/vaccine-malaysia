@@ -2,27 +2,25 @@ import {malaysiaPopulation, stateArray, StateName} from "./globalState";
 import { startVaccineYear} from "../config";
 import {format, parseISO} from "date-fns";
 
-const sortedDataState = {
-    'Johor': [],
-    'Kedah': [],
-    'Kelantan': [],
-    'Melaka': [],
-    'Negeri Sembilan': [],
-    'Pahang': [],
-    'Perak': [],
-    'Perlis': [],
-    'Pulau Pinang': [],
-    'Sabah': [],
-    'Sarawak': [],
-    'Selangor': [],
-    'Terengganu': [],
-    'W.P. Kuala Lumpur': [],
-    'W.P. Labuan': [],
-    'W.P. Putrajaya': [],
-}
-
 export const stateSorter = (data, addPercentage = false) => {
-    const sortedData = {...sortedDataState}
+    const sortedData = {
+        'Johor': [],
+        'Kedah': [],
+        'Kelantan': [],
+        'Melaka': [],
+        'Negeri Sembilan': [],
+        'Pahang': [],
+        'Perak': [],
+        'Perlis': [],
+        'Pulau Pinang': [],
+        'Sabah': [],
+        'Sarawak': [],
+        'Selangor': [],
+        'Terengganu': [],
+        'W.P. Kuala Lumpur': [],
+        'W.P. Labuan': [],
+        'W.P. Putrajaya': [],
+    }
 
     const dataLength = data.length
 
@@ -76,8 +74,25 @@ const yearProcessor = (str) => {
     return date.getFullYear()
 }
 
-export const hospitalSorter = (data, isIcu = false) => {
-    const sortedData = {...sortedDataState}
+export const hospitalSorter = (data, isIcu) => {
+    const sortedData = {
+        'Johor': [],
+        'Kedah': [],
+        'Kelantan': [],
+        'Melaka': [],
+        'Negeri Sembilan': [],
+        'Pahang': [],
+        'Perak': [],
+        'Perlis': [],
+        'Pulau Pinang': [],
+        'Sabah': [],
+        'Sarawak': [],
+        'Selangor': [],
+        'Terengganu': [],
+        'W.P. Kuala Lumpur': [],
+        'W.P. Labuan': [],
+        'W.P. Putrajaya': [],
+    }
 
     const dataLength = data.length
 
@@ -97,7 +112,6 @@ export const hospitalSorter = (data, isIcu = false) => {
 
         if (addToRecord) {
             if (isIcu) {
-                // do something
                 const icuCovidAndPui = parseInt(currentData.icu_covid) + parseInt(currentData.icu_pui)
                 const icuCovidPuiPercentage = icuCovidAndPui / parseInt(currentData.bed_icu_total) * 100
                 const icuNonCovidPercentage = parseInt(currentData.icu_noncovid) / parseInt(currentData.bed_icu_total) * 100
@@ -135,8 +149,6 @@ export const hospitalSorter = (data, isIcu = false) => {
                 }
             }
 
-            if (isIcu) console.log(updatedData)
-
             if (stateName) {
                 sortedData[stateName].push(updatedData)
             } else {
@@ -155,7 +167,24 @@ export const hospitalSorter = (data, isIcu = false) => {
 
 export const vaxRegistrationProcessor = (data, isNational = false) => {
     const sortedDataNational = []
-    const sortedData = {...sortedDataState}
+    const sortedData = {
+        'Johor': [],
+        'Kedah': [],
+        'Kelantan': [],
+        'Melaka': [],
+        'Negeri Sembilan': [],
+        'Pahang': [],
+        'Perak': [],
+        'Perlis': [],
+        'Pulau Pinang': [],
+        'Sabah': [],
+        'Sarawak': [],
+        'Selangor': [],
+        'Terengganu': [],
+        'W.P. Kuala Lumpur': [],
+        'W.P. Labuan': [],
+        'W.P. Putrajaya': [],
+    }
 
     const dataLength = data.length
 
@@ -184,24 +213,24 @@ export const vaxRegistrationProcessor = (data, isNational = false) => {
 
         let updatedData
 
-               const totalPercentage = dataTotal / populationData.total * 100
-                const elderlyPercentage = dataElderly / populationData.elderly * 100
-                const above18Percentage = dataAbove18 / populationAbove18 * 100
-                const under18Percentage = dataUnder18 / populationUnder18 * 100
+        const totalPercentage = dataTotal / populationData.total * 100
+        const elderlyPercentage = dataElderly / populationData.elderly * 100
+        const above18Percentage = dataAbove18 / populationAbove18 * 100
+        const under18Percentage = dataUnder18 / populationUnder18 * 100
 
-                updatedData = {
-                    ...currentData,
-                    'Total Reg': totalPercentage,
-                    'Elderly Reg': elderlyPercentage,
-                    'Above 18 Reg' : above18Percentage,
-                    'Under 18 Reg' : under18Percentage,
-                }
+        updatedData = {
+            ...currentData,
+            'Total Reg': totalPercentage,
+            'Elderly Reg': elderlyPercentage,
+            'Above 18 Reg': above18Percentage,
+            'Under 18 Reg': under18Percentage,
+        }
 
-            if (stateName === 'Malaysia') {
-                sortedDataNational.push(updatedData)
-            } else {
-                sortedData[stateName].push(updatedData)
-            }
+        if (stateName === 'Malaysia') {
+            sortedDataNational.push(updatedData)
+        } else {
+            sortedData[stateName].push(updatedData)
+        }
 
         ++i
     }

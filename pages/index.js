@@ -38,18 +38,16 @@ export default function Home({
         nationalDeaths,
        ])
 
-console.log('in index = ', snap.nationalVax)
-
   return (
     <>
       <Head>
           <title>KKM tracker</title>
           <meta name={'keywords'} content={'covid tracker , dashboard'}/>
       </Head>
-        <NationalFilter/>
         { snap.nationalRegistration.length > 0 &&
                 <GraphNational />
         }
+        <NationalFilter/>
     </>
   )
 }

@@ -6,12 +6,16 @@ export const NationalFilter = () => {
 
     const {casesNew, totalReg, elderlyReg, above18Reg, under18Reg, deathsNew, dose1, dose2 } = snap.isShowLineNational
 
-    const changeValue = (state) => {
+    const changeValue = (state, relatedState) => {
         globalState.isShowLineNational[state] = !snap.isShowLineNational[state]
+
+        if (relatedState) {
+            globalState.isShowLineNational[relatedState] = !snap.isShowLineNational[relatedState]
+        }
     }
 
     return (
-        <div className="bg-gray-200 p-5">
+        <div className="bg-gray-200 p-5 mt-5">
             <div className="flex flex-col items-center justify-center">
                 <div className="grid grid-cols-1 gap-1 md:grid-cols-3">
                     <label className="inline-flex items-center mt-3">
@@ -19,8 +23,7 @@ export const NationalFilter = () => {
                             type="radio"
                             className="form-radio h-4 w-4 text-gray-600"
                             checked={casesNew}
-                            onClick={() => changeValue('casesNew')}
-                            onChange={()=>{}}
+                            onClick={() => changeValue('casesNew', 'deathsNew')}
                             onChange={()=>{}}
                         /><span
                             className="ml-2 text-gray-700 text-sm">New Cases</span>
@@ -97,7 +100,7 @@ export const NationalFilter = () => {
                             onChange={()=>{}}
                             className="form-radio h-4 w-4 text-indigo-600"
                             checked={deathsNew}
-                            onClick={() => changeValue('deathsNew')}
+                            onClick={() => changeValue('deathsNew', 'casesNew')}
                         /><span
                             className="ml-2 text-gray-700 text-sm">Death Daily</span>
                     </label>

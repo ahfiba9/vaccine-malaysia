@@ -136,6 +136,7 @@ export const globalState = proxy ({
     stateCases: {},
     nationalDeath: [],
     nationalRegistration: [],
+    stateRegistration: {},
     stateDeaths: {},
     stateIcu: {},
     stateHospital: {},
