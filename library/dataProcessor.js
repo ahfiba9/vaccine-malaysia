@@ -2,25 +2,27 @@ import {malaysiaPopulation, stateArray, StateName} from "./globalState";
 import { startVaccineYear} from "../config";
 import {format, parseISO} from "date-fns";
 
+const sortedDataState = {
+    'Johor': [],
+    'Kedah': [],
+    'Kelantan': [],
+    'Melaka': [],
+    'Negeri Sembilan': [],
+    'Pahang': [],
+    'Perak': [],
+    'Perlis': [],
+    'Pulau Pinang': [],
+    'Sabah': [],
+    'Sarawak': [],
+    'Selangor': [],
+    'Terengganu': [],
+    'W.P. Kuala Lumpur': [],
+    'W.P. Labuan': [],
+    'W.P. Putrajaya': [],
+}
+
 export const stateSorter = (data, addPercentage = false) => {
-    const sortedData = {
-        'Johor': [],
-        'Kedah': [],
-        'Kelantan': [],
-        'Melaka': [],
-        'Negeri Sembilan': [],
-        'Pahang': [],
-        'Perak': [],
-        'Perlis': [],
-        'Pulau Pinang': [],
-        'Sabah': [],
-        'Sarawak': [],
-        'Selangor': [],
-        'Terengganu': [],
-        'W.P. Kuala Lumpur': [],
-        'W.P. Labuan': [],
-        'W.P. Putrajaya': [],
-    }
+    const sortedData = {...sortedDataState}
 
     const dataLength = data.length
 
@@ -33,11 +35,11 @@ export const stateSorter = (data, addPercentage = false) => {
         const year = yearProcessor(currentData.date)
         const addToRecord = year === startVaccineYear
 
-        const foundState = stateArray.find(state => state === currentData.state)
+        const stateName = currentData.state
 
-        if (!foundState) break
+        if (!stateName) break
 
-        const populationData = malaysiaPopulation[foundState]
+        const populationData = malaysiaPopulation[stateName]
         const validPopulation = populationData.adult + populationData.elderly
 
         let updatedData
@@ -55,8 +57,8 @@ export const stateSorter = (data, addPercentage = false) => {
                 updatedData = {...currentData}
             }
 
-            if (foundState) {
-                sortedData[foundState].push(updatedData)
+            if (stateName) {
+                sortedData[stateName].push(updatedData)
             } else {
                 console.log(i, ' = ', updatedData)
             }
@@ -75,24 +77,7 @@ const yearProcessor = (str) => {
 }
 
 export const hospitalSorter = (data, isIcu = false) => {
-    const sortedData = {
-        'Johor': [],
-        'Kedah': [],
-        'Kelantan': [],
-        'Melaka': [],
-        'Negeri Sembilan': [],
-        'Pahang': [],
-        'Perak': [],
-        'Perlis': [],
-        'Pulau Pinang': [],
-        'Sabah': [],
-        'Sarawak': [],
-        'Selangor': [],
-        'Terengganu': [],
-        'W.P. Kuala Lumpur': [],
-        'W.P. Labuan': [],
-        'W.P. Putrajaya': [],
-    }
+    const sortedData = {...sortedDataState}
 
     const dataLength = data.length
 
@@ -102,13 +87,11 @@ export const hospitalSorter = (data, isIcu = false) => {
 
         const currentData = data[i]
 
-        const foundState = stateArray.find(state => state === currentData.state)
+        const stateName = currentData.state
+        if (!stateName) break
 
         const year = yearProcessor(currentData.date)
         const addToRecord = year === startVaccineYear
-
-
-        if (!foundState) break
 
         let updatedData
 
@@ -154,8 +137,8 @@ export const hospitalSorter = (data, isIcu = false) => {
 
             if (isIcu) console.log(updatedData)
 
-            if (foundState) {
-                sortedData[foundState].push(updatedData)
+            if (stateName) {
+                sortedData[stateName].push(updatedData)
             } else {
                 console.log(i,' = ', updatedData)
             }
@@ -168,4 +151,111 @@ export const hospitalSorter = (data, isIcu = false) => {
     }
 
     return sortedData
+}
+
+export const vaxRegistrationProcessor = (data, isNational = false) => {
+    const sortedDataNational = []
+    const sortedData = {...sortedDataState}
+
+    const dataLength = data.length
+
+    //iterate the data and move it to each state
+    let i = 0
+    while (i < dataLength) {
+
+        const currentData = data[i]
+        const stateName = currentData.state
+
+        if (!stateName) break
+
+        const populationData = malaysiaPopulation[stateName]
+
+        // console.log('state = ', stateName)
+        // console.log('population data = ', populationData)
+
+        const populationAbove18 = populationData.adult + populationData.elderly
+        const populationUnder18 = populationData.total - populationAbove18
+
+        const dataTotal = parseInt(currentData.total)
+        const dataUnder18 = parseInt(currentData.children)
+        const dataElderly = parseInt(currentData.elderly)
+        const dataAbove18 = dataTotal - dataUnder18
+
+
+        let updatedData
+
+               const totalPercentage = dataTotal / populationData.total * 100
+                const elderlyPercentage = dataElderly / populationData.elderly * 100
+                const above18Percentage = dataAbove18 / populationAbove18 * 100
+                const under18Percentage = dataUnder18 / populationUnder18 * 100
+
+                updatedData = {
+                    ...currentData,
+                    'Total Reg': totalPercentage,
+                    'Elderly Reg': elderlyPercentage,
+                    'Above 18 Reg' : above18Percentage,
+                    'Under 18 Reg' : under18Percentage,
+                }
+
+            if (stateName === 'Malaysia') {
+                sortedDataNational.push(updatedData)
+            } else {
+                sortedData[stateName].push(updatedData)
+            }
+
+        ++i
+    }
+
+    if (isNational) {
+        return sortedDataNational
+    } else {
+        return sortedData
+    }
+}
+
+export const malaysiaSorter = (data, isAddPercentage=true, name) => {
+    const sortedDataNational = []
+
+    const dataLength = data.length
+
+    //iterate the data and move it to each state
+    let i = 0
+    while (i < dataLength) {
+
+        const currentData = data[i]
+
+        if (!currentData.date) break
+
+        const year = yearProcessor(currentData.date)
+        const addToRecord = year === startVaccineYear
+
+        let updatedData
+        if (isAddPercentage) {
+            const populationData = malaysiaPopulation["Malaysia"].total
+
+            const dataDose1 = parseInt(currentData.dose1_cumul)
+            const dataDose2 = parseInt(currentData.dose2_cumul)
+
+            const dose1Percentage = dataDose1 / populationData * 100
+            const dose2Percentage = dataDose2 / populationData * 100
+
+
+            updatedData = {
+                ...currentData,
+                'Dose 1': dose1Percentage,
+                'Dose 2': dose2Percentage,
+            }
+        } else {
+            if (addToRecord) {
+                updatedData = {...currentData}
+            }
+        }
+
+        if (addToRecord) {
+            sortedDataNational.push(updatedData)
+        }
+
+        ++i
+    }
+        return sortedDataNational
 }

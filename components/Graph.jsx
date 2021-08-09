@@ -38,11 +38,9 @@ export const Graph = ({stateName}) => {
     console.log('state name = ', stateName)
 
     return (
-        <>
-            <p>{stateName}</p>
-
-            <ResponsiveContainer width={800} height={400}>
-                <LineChart margin={{top: 5, right: 30, left: 20, bottom: 5}} data={snap.stateVax[stateName]}>
+        <div className={"container mx-auto shadow-lg rounded-lg w-auto hover:shadow-2xl transition duration-300"}>
+            <p className={'text-center'}>{stateName}</p>
+                <LineChart width={530} height={250} margin={{top: 5, right: 30, left: 20, bottom: 5}} data={snap.stateVax[stateName]}>
                     <XAxis
                         dataKey="date"
                         allowDuplicatedCategory={false}
@@ -64,6 +62,7 @@ export const Graph = ({stateName}) => {
                     <YAxis yAxisId={2} domain={[0, 10000]} orientation={'right'}/>
                     <CartesianGrid opacity={0.5} vertical={false}/>
                     <Tooltip content={<CustomTooltip/>}/>
+                    {/*<Tooltip cursor={false} wrapperStyle={{ display: "none" }} />*/}
                     <Legend/>
                     <Line dot={false} yAxisId={2} data={snap.stateCases[stateName]} type="monotone" dataKey='cases_new'
                           stroke={color.gray} activeDot={{r: 8}}/>
@@ -83,7 +82,6 @@ export const Graph = ({stateName}) => {
                     <Line dot={false} yAxisId={1} data={snap.stateVax[stateName]} type="monotone" dataKey="Dose 2 total"
                           stroke={color.primary} activeDot={{r: 8}}/>
                 </LineChart>
-            </ResponsiveContainer>
-        </>
+        </div>
     )
 }

@@ -7,19 +7,17 @@ import {citfBaseUrl, kkmBaseUrl} from "../config";
 import {useEffect, useState} from "react";
 import {globalState, stateArray, StateName } from "../library/globalState";
 import {useSnapshot} from "valtio";
-import {hospitalSorter, stateSorter} from "../library/dataProcessor";
+import {malaysiaSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
 import color from "../library/color";
 import {Graph} from "../components/Graph";
+import {GraphNational} from "../components/GraphNational";
+import {NationalFilter} from "../components/NationalFilter";
 
 export default function Home({
-                                 stateVaccination,
                                  nationalVaccination,
-                                 stateCases,
                                  nationalCases,
-                                 stateDeaths,
                                  nationalDeaths,
-                                 hospitalData,
-                                 icuData,
+                                 nationalRegistration
                              }
 ) {
 
@@ -29,27 +27,18 @@ export default function Home({
     // console.log(nationalVaccination)
 
     useEffect(() => {
-        globalState.stateVax = stateSorter(stateVaccination.data, true)
-        globalState.nationalVax = nationalVaccination.data
-        globalState.nationalCases = nationalCases.data
-        globalState.stateCases = stateSorter(stateCases.data, false)
-        globalState.nationalDeath = nationalDeaths.data
-        globalState.stateDeaths = stateSorter(stateDeaths.data,false)
-        globalState.stateHospital = hospitalSorter(hospitalData.data, false)
-        globalState.stateIcu = hospitalSorter(icuData.data, true)
+        globalState.nationalVax = malaysiaSorter(nationalVaccination.data)
+        globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'national cases')
+        globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, ' national death')
+        globalState.nationalRegistration = vaxRegistrationProcessor(nationalRegistration.data, true)
 
-
-    }, [stateVaccination,
+    }, [nationalRegistration,
         nationalVaccination,
-        stateCases,
         nationalCases,
-        stateDeaths,
         nationalDeaths,
-        hospitalData,
-        icuData,
        ])
 
-
+console.log('in index = ', snap.nationalVax)
 
   return (
     <>
@@ -57,13 +46,9 @@ export default function Home({
           <title>KKM tracker</title>
           <meta name={'keywords'} content={'covid tracker , dashboard'}/>
       </Head>
-
-        { Object.keys(snap.stateVax).length > 0 &&
-        <div>
-            {stateArray.map((state) => (
-                <Graph key={state} stateName={state} />
-            ))}
-        </div>
+        <NationalFilter/>
+        { snap.nationalRegistration.length > 0 &&
+                <GraphNational />
         }
     </>
   )
@@ -72,40 +57,42 @@ export default function Home({
 
 export const getStaticProps = async () => {
     try {
+        console.log('in get static props')
+
         // vaccination data
-        const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)
+        // const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)
         const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
 
-        const stateVaccination = readString(dataVaxState, {header: true})
+        // const stateVaccination = readString(dataVaxState, {header: true})
         const nationalVaccination = readString(dataVaxNational, {header: true})
 
         // registration data
         // const dataVaxRegState = await getApi(`${citfBaseUrl}/registration/vaxreg_state.csv`)
-        // const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
+        const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
         //
         // const stateRegistration = readString(dataVaxRegState, {header: true})
-        // const nationalRegistration = readString(dataVaxRegNational, {header: true})
+        const nationalRegistration = readString(dataVaxRegNational, {header: true})
 
         // cases data
-        const stateCasesData = await getApi(`${kkmBaseUrl}/cases_state.csv`)
+        // const stateCasesData = await getApi(`${kkmBaseUrl}/cases_state.csv`)
         const nationalCasesData = await getApi(`${kkmBaseUrl}/cases_malaysia.csv`)
 
-        const stateCases = readString(stateCasesData, {header: true})
+        // const stateCases = readString(stateCasesData, {header: true})
         const nationalCases = readString(nationalCasesData, {header: true})
 
         // deaths data
-        const stateDeathsData = await getApi(`${kkmBaseUrl}/deaths_state.csv`)
+        // const stateDeathsData = await getApi(`${kkmBaseUrl}/deaths_state.csv`)
         const nationalDeathsData = await getApi(`${kkmBaseUrl}/deaths_malaysia.csv`)
 
-        const stateDeaths = readString(stateDeathsData, {header: true})
+        // const stateDeaths = readString(stateDeathsData, {header: true})
         const nationalDeaths = readString(nationalDeathsData, {header: true})
 
         // hospital and icu data
-        const hospitalDataRaw = await getApi(`${kkmBaseUrl}/hospital.csv`)
-        const icuDataRaw = await getApi(`${kkmBaseUrl}/icu.csv`)
-
-        const hospitalData = readString(hospitalDataRaw, {header: true})
-        const icuData = readString(icuDataRaw, {header: true})
+        // const hospitalDataRaw = await getApi(`${kkmBaseUrl}/hospital.csv`)
+        // const icuDataRaw = await getApi(`${kkmBaseUrl}/icu.csv`)
+        //
+        // const hospitalData = readString(hospitalDataRaw, {header: true})
+        // const icuData = readString(icuDataRaw, {header: true})
 
         // tests data
         // const nationalTestsData = await getApi(`${kkmBaseUrl}/tests_malaysia.csv`)
@@ -115,14 +102,10 @@ export const getStaticProps = async () => {
 
         return {
             props : {
-                stateVaccination,
                 nationalVaccination,
-                stateCases,
                 nationalCases,
-                stateDeaths,
                 nationalDeaths,
-                hospitalData,
-                icuData,
+                nationalRegistration
             }
         }
     } catch {
