@@ -19,9 +19,9 @@ function CustomTooltip({ active, payload, label }) {
                     }
 
                     return (
-                        <>
-                            <p key={item.name}>{item.name}: {text}</p>
-                        </>
+                        <div key={item.dataKey}>
+                            <p>{item.name}: {text}</p>
+                        </div>
 
                     )
                 })}
