@@ -1,19 +1,15 @@
 import Head from 'next/head'
-import Link from 'next/link'
 
 import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";
 import {citfBaseUrl, kkmBaseUrl} from "../config";
-import {useEffect, useRef, useState} from "react";
-import {globalState, stateArray, StateName } from "../library/globalState";
+import {useEffect} from "react";
+import {globalState, stateArray } from "../library/globalState";
 import {useSnapshot} from "valtio";
 import {hospitalSorter, stateSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
-import color from "../library/color";
 import {Graph} from "../components/Graph";
-import useOnScreen from "../library/useOnScreen";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
-import Loader from "../components/Loader";
 import LoaderComponent from "../components/LoaderChecker";
 
 export default function States({
@@ -50,7 +46,7 @@ export default function States({
     return (
         <>
             <Head>
-                <title>Covid In Malaysia's State</title>
+                <title>Covid In Malaysia&apos;s State</title>
                 <meta name={'keywords'} content={'covid tracker , vaccine tracker, CITF, KKM, MOH, ICU, Hospital, ventilator'}/>
             </Head>
             <LoaderComponent />
