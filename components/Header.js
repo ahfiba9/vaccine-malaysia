@@ -6,7 +6,7 @@ export const Header = () => {
                 <span>Covid In Malaysia</span>
             </h1>
             <p className={'text-kl text-center'}>
-                Bringing you covid data in Malaysia in graph
+                Visualise Covid-19 data in graph
             </p>
         </div>
     )

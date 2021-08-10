@@ -12,6 +12,7 @@ import color from "../library/color";
 import {Graph} from "../components/Graph";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
+import LoaderComponent from "../components/LoaderChecker";
 
 export default function Home({
                                  nationalVaccination,
@@ -38,9 +39,13 @@ export default function Home({
   return (
     <>
       <Head>
-          <title>KKM tracker</title>
-          <meta name={'keywords'} content={'covid tracker , dashboard'}/>
+          <title>Covid In Malaysia</title>
+          <meta name={'keywords'} content={'covid tracker , vaccine tracker, CITF, KKM, MOH'}/>
       </Head>
+        <LoaderComponent />
+        <h1 className={'text-2xl text-green-500 text-center '}>
+            <span>National Data</span>
+        </h1>
         { snap.nationalRegistration.length > 0 &&
                 <GraphSinglePage isNational={true}/>
         }

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import {useRouter} from "next/router";
+import {versionNumber} from "../config";
 
 const Footer = () => {
     const router = useRouter()
@@ -7,8 +8,9 @@ const Footer = () => {
         <div className="container bg-gray-300 p-8 rounded-lg mt-10">
             <div className="sm:flex mb-4 justify-between">
                 <div>
-                    <p className="text-black font-sans leading-normal">All the raw data is from the courtesy of MOH and CITF Malaysia </p>
-                    <p className="text-black font-sans leading-normal">© 2021 Ahmad Fikri Baharan</p>
+                    <p className="text-black font-sans leading-normal">All raw data is courtesy from MOH and CITF Malaysia </p>
+                    <p className="text-black font-sans leading-normal">© 2021 Ahmad Fikri Baharan </p>
+                    <p className="text-black font-sans leading-normal">v {versionNumber} </p>
                 </div>
                     <button
                         onClick={() => router.push('https://www.linkedin.com/in/ahmad-fikri-baharan/')}

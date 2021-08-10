@@ -14,6 +14,7 @@ import useOnScreen from "../library/useOnScreen";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
 import Loader from "../components/Loader";
+import LoaderComponent from "../components/LoaderChecker";
 
 export default function States({
                                  stateVaccination,
@@ -45,21 +46,14 @@ export default function States({
         stateRegistration
     ])
 
-    const DummyComponent = () => {
-
-        const ref = useRef()
-        const isVisible = useOnScreen(ref)
-
-        return <div ref={ref}> {!isVisible && <Loader/>}</div>
-    }
 
     return (
         <>
             <Head>
-                <title>KKM tracker</title>
-                <meta name={'keywords'} content={'covid tracker , dashboard'}/>
+                <title>Covid In Malaysia's State</title>
+                <meta name={'keywords'} content={'covid tracker , vaccine tracker, CITF, KKM, MOH, ICU, Hospital, ventilator'}/>
             </Head>
-            <DummyComponent />
+            <LoaderComponent />
 
             { Object.keys(snap.stateVax).length > 0 && !singleGraphName &&
             <div className={"grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 md:gap-x-10 xl-grid-cols-4 gap-y-10 gap-x-6"}>
@@ -70,19 +64,29 @@ export default function States({
             }
             {
                 singleGraphName &&
-                    <div>
-                        <GraphSinglePage isNational={false} stateName={singleGraphName}/>
-                        <GraphFilter isNational={false}/>
-                    </div>
+                    <>
+                <div>
+                    <h1 className={'text-2xl text-green-500 text-center '}>
+                        <span>{singleGraphName}</span>
+                    </h1>
+                    <GraphSinglePage isNational={false} stateName={singleGraphName}/>
+                    <GraphFilter isNational={false}/>
+                </div>
+                <div className={'flex justify-center'}>
+                    <button
+                        className="justify-items-center bg-green-500 bg-opacity-80 hover:bg-green-800 transition duration-300 text-white font-bold py-1 px-4 rounded w-1/6"
+                        onClick={() => {
+                            globalState.singleGraphName = ''
+                        }}
+                    >
+                        Close
+                    </button>
+                </div>
+                    </>
             }
-            {singleGraphName &&
-            <button
-                className="bg-green-500 bg-opacity-80 hover:bg-green-800 transition duration-300 text-white font-bold py-1 px-4 rounded w-1/6"
-                onClick={() => globalState.singleGraphName = ''}
-            >
-                Close
-            </button>
-            }
+            <div className={'flex justify-center mt-5'}>
+                <LoaderComponent/>
+            </div>
         </>
     )
 }
