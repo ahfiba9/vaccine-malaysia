@@ -75,7 +75,7 @@ export default function States({
                             globalState.singleGraphName = ''
                         }}
                     >
-                        Close
+                        Back to States List
                     </button>
                 </div>
                     </>
