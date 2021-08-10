@@ -10,8 +10,8 @@ import {useSnapshot} from "valtio";
 import {malaysiaSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
 import color from "../library/color";
 import {Graph} from "../components/Graph";
-import {GraphNational} from "../components/GraphNational";
-import {NationalFilter} from "../components/NationalFilter";
+import {GraphSinglePage} from "../components/GraphSinglePage";
+import {GraphFilter} from "../components/GraphFilter";
 
 export default function Home({
                                  nationalVaccination,
@@ -23,13 +23,10 @@ export default function Home({
 
     const snap = useSnapshot(globalState)
 
-    // console.log(stateVaccination)
-    // console.log(nationalVaccination)
-
     useEffect(() => {
         globalState.nationalVax = malaysiaSorter(nationalVaccination.data)
-        globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'national cases')
-        globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, ' national death')
+        globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'cases')
+        globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, 'death')
         globalState.nationalRegistration = vaxRegistrationProcessor(nationalRegistration.data, true)
 
     }, [nationalRegistration,
@@ -45,9 +42,9 @@ export default function Home({
           <meta name={'keywords'} content={'covid tracker , dashboard'}/>
       </Head>
         { snap.nationalRegistration.length > 0 &&
-                <GraphNational />
+                <GraphSinglePage isNational={true}/>
         }
-        <NationalFilter/>
+        <GraphFilter isNational={true}/>
     </>
   )
 }
@@ -55,48 +52,21 @@ export default function Home({
 
 export const getStaticProps = async () => {
     try {
-        console.log('in get static props')
-
         // vaccination data
-        // const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)
         const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
-
-        // const stateVaccination = readString(dataVaxState, {header: true})
         const nationalVaccination = readString(dataVaxNational, {header: true})
 
         // registration data
-        // const dataVaxRegState = await getApi(`${citfBaseUrl}/registration/vaxreg_state.csv`)
         const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
-        //
-        // const stateRegistration = readString(dataVaxRegState, {header: true})
         const nationalRegistration = readString(dataVaxRegNational, {header: true})
 
         // cases data
-        // const stateCasesData = await getApi(`${kkmBaseUrl}/cases_state.csv`)
         const nationalCasesData = await getApi(`${kkmBaseUrl}/cases_malaysia.csv`)
-
-        // const stateCases = readString(stateCasesData, {header: true})
         const nationalCases = readString(nationalCasesData, {header: true})
 
         // deaths data
-        // const stateDeathsData = await getApi(`${kkmBaseUrl}/deaths_state.csv`)
         const nationalDeathsData = await getApi(`${kkmBaseUrl}/deaths_malaysia.csv`)
-
-        // const stateDeaths = readString(stateDeathsData, {header: true})
         const nationalDeaths = readString(nationalDeathsData, {header: true})
-
-        // hospital and icu data
-        // const hospitalDataRaw = await getApi(`${kkmBaseUrl}/hospital.csv`)
-        // const icuDataRaw = await getApi(`${kkmBaseUrl}/icu.csv`)
-        //
-        // const hospitalData = readString(hospitalDataRaw, {header: true})
-        // const icuData = readString(icuDataRaw, {header: true})
-
-        // tests data
-        // const nationalTestsData = await getApi(`${kkmBaseUrl}/tests_malaysia.csv`)
-        //
-        // const nationalTests = readString(nationalTestsData, {header: true})
-
 
         return {
             props : {

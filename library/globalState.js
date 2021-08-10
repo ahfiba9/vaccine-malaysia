@@ -87,6 +87,11 @@ export const malaysiaPopulation = {
         adult: 1367200,
         elderly: 239200
     },
+    'Penang':{
+        total: 1773600,
+        adult: 1367200,
+        elderly: 239200
+    },
     'Sabah':{
         total: 3908500,
         adult: 2758400,
@@ -140,14 +145,38 @@ export const globalState = proxy ({
     stateDeaths: {},
     stateIcu: {},
     stateHospital: {},
-    isShowLineNational: {
-        casesNew: true,
-        totalReg: false,
-        elderlyReg: false,
-        above18Reg: false,
-        under18Reg: false,
-        deathsNew: false,
-        dose1: true,
-        dose2: true
-    }
+    isShowGraphLine: {
+        national: {
+            casesNew: true,
+            totalReg: false,
+            elderlyReg: false,
+            above18Reg: false,
+            under18Reg: false,
+            deathsNew: false,
+            dose1: true,
+            dose2: true
+        },
+        state: {
+            casesNew: true,
+            totalReg: false,
+            elderlyReg: false,
+            above18Reg: false,
+            under18Reg: false,
+            deathsNew: false,
+            dose1: true,
+            dose2: true,
+            covidHosp: false,
+            nonCovidHosp: false,
+            totalHosp: false,
+            covidIcu: false,
+            nonCovidIcu: false,
+            icuUsage: false,
+            covidVentilator: false,
+            nonCovidVentilator: false,
+            ventilatorUsage: false
+        },
+    },
+    singleGraphName: '',
+    isStatesGraphLoading: false,
+
 })

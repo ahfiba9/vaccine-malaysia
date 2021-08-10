@@ -2,7 +2,10 @@ import {malaysiaPopulation, stateArray, StateName} from "./globalState";
 import { startVaccineYear} from "../config";
 import {format, parseISO} from "date-fns";
 
-export const stateSorter = (data, addPercentage = false) => {
+export const stateSorter = (data, addPercentage = false, dataType) => {
+
+    const changeToNumber = dataType === 'deaths' || dataType === 'cases'
+
     const sortedData = {
         'Johor': [],
         'Kedah': [],
@@ -30,29 +33,48 @@ export const stateSorter = (data, addPercentage = false) => {
 
         const currentData = data[i]
 
-        const year = yearProcessor(currentData.date)
+        let updatedData
+
+        if (currentData.state === 'Penang') {
+            updatedData = {...currentData, state: 'Pulau Pinang'}
+        } else {
+            updatedData = {...currentData}
+        }
+
+        const year = yearProcessor(updatedData.date)
         const addToRecord = year === startVaccineYear
 
-        const stateName = currentData.state
-
-        if (!stateName) break
-
+        const stateName = updatedData.state
         const populationData = malaysiaPopulation[stateName]
-        const validPopulation = populationData.adult + populationData.elderly
 
-        let updatedData
+        if (!stateName || !populationData) break
+
+        const validPopulation = populationData.adult + populationData.elderly
 
         if (addToRecord) {
             // skip this for cases state
             if (addPercentage) {
                 updatedData = {
-                    ...currentData,
-                    'Dose 1 total': parseInt(currentData.dose1_cumul) / validPopulation * 100,
-                    'Dose 2 total': parseInt(currentData.dose2_cumul) / validPopulation * 100,
-                    'Combined total': parseInt(currentData.total_cumul) / validPopulation * 100,
+                    ...updatedData,
+                    'Dose 1': parseInt(updatedData.dose1_cumul) / validPopulation * 100,
+                    'Dose 2': parseInt(updatedData.dose2_cumul) / validPopulation * 100,
+                    'Combined total': parseInt(updatedData.total_cumul) / validPopulation * 100,
                 }
             } else {
-                updatedData = {...currentData}
+                if (changeToNumber) {
+                    let dailyDeaths
+                    let dailyCases
+
+                    if (dataType === 'deaths') {
+                        dailyDeaths = parseInt(updatedData.deaths_new)
+                        updatedData = {...updatedData, 'Daily Deaths': dailyDeaths, baseline: 0}
+                    } else {
+                        dailyCases = parseInt(updatedData.cases_new)
+                        updatedData = {...updatedData, 'Daily Cases': dailyCases}
+                    }
+                } else {
+                    updatedData = {...updatedData}
+                }
             }
 
             if (stateName) {
@@ -199,9 +221,6 @@ export const vaxRegistrationProcessor = (data, isNational = false) => {
 
         const populationData = malaysiaPopulation[stateName]
 
-        // console.log('state = ', stateName)
-        // console.log('population data = ', populationData)
-
         const populationAbove18 = populationData.adult + populationData.elderly
         const populationUnder18 = populationData.total - populationAbove18
 
@@ -243,6 +262,8 @@ export const vaxRegistrationProcessor = (data, isNational = false) => {
 }
 
 export const malaysiaSorter = (data, isAddPercentage=true, name) => {
+    const changeToNumber = name === 'cases' || name === 'death'
+
     const sortedDataNational = []
 
     const dataLength = data.length
@@ -275,8 +296,22 @@ export const malaysiaSorter = (data, isAddPercentage=true, name) => {
                 'Dose 2': dose2Percentage,
             }
         } else {
+
+
             if (addToRecord) {
-                updatedData = {...currentData}
+                if (changeToNumber) {
+                    let dailyDeaths
+                    let dailyCases
+                    if (name === 'death'){
+                        dailyDeaths = parseInt(currentData.deaths_new)
+                        updatedData = {...currentData, 'Daily Deaths': dailyDeaths}
+                    } else {
+                        dailyCases = parseInt(currentData.cases_new)
+                        updatedData = {...currentData, 'Daily Cases': dailyCases}
+                    }
+                } else {
+                    updatedData = {...currentData}
+                }
             }
         }
 

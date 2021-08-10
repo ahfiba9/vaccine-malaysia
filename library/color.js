@@ -31,4 +31,13 @@ export default {
 
     redDiscountTag: '#EB3F1A',
 
+tone1: '#00429d',
+tone2:'#4771b2',
+tone3:'#73a2c6',
+tone4:'#a5d5d8',
+tone5:'#94003a',
+tone6:'#ffc8b6',
+tone7:'#ff8b88',
+tone8:'#ef4a5a',
+tone9:'#c70029',
 }
