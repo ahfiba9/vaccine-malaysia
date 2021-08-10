@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
 
 import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";

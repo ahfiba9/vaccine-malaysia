@@ -1,5 +1,5 @@
 import {useSnapshot} from "valtio";
-import {globalState} from "../library/globalState";
+import {globalState} from '../library/globalState'
 import {GraphFilterButton} from "./GraphFilterButton";
 
 export const GraphFilter = ({isNational}) => {

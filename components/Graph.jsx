@@ -1,5 +1,5 @@
-import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {globalState, StateName} from "../library/globalState";
+import {CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import {globalState} from "../library/globalState";
 import {format, parseISO} from "date-fns";
 import color from "../library/color";
 import {useSnapshot} from "valtio";
