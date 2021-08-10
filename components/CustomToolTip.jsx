@@ -8,7 +8,7 @@ export function CustomTooltip({ active, payload, label }) {
                 {payload.map( item => {
                     let text
 
-                    if (typeof (item.value) === 'string') {
+                    if (item.name === 'Daily Cases' || item.name === 'Daily Deaths') {
                         text = item.value
                     } else {
                         text = item.value.toFixed(2) + '%'
