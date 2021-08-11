@@ -3,21 +3,20 @@ import Head from 'next/head'
 import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";
 import {citfBaseUrl, kkmBaseUrl} from "../config";
-import {useEffect, useState} from "react";
-import {globalState, stateArray, StateName } from "../library/globalState";
+import {useEffect} from "react";
+import {globalState } from "../library/globalState";
 import {useSnapshot} from "valtio";
 import {malaysiaSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
-import color from "../library/color";
-import {Graph} from "../components/Graph";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
 import LoaderComponent from "../components/LoaderChecker";
+import {LatestData} from "../components/LatestData";
 
 export default function Home({
                                  nationalVaccination,
                                  nationalCases,
                                  nationalDeaths,
-                                 nationalRegistration
+                                 nationalRegistration,
                              }
 ) {
 
@@ -28,14 +27,11 @@ export default function Home({
         globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'cases')
         globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, 'death')
         globalState.nationalRegistration = vaxRegistrationProcessor(nationalRegistration.data, true)
-
     }, [nationalRegistration,
         nationalVaccination,
         nationalCases,
         nationalDeaths,
        ])
-
-    // console.log(snap.nationalCases[nationalCases.length - 1])
 
   return (
     <>
@@ -47,10 +43,7 @@ export default function Home({
         <h1 className={'text-2xl text-green-500 text-center '}>
             <span>National Data</span>
         </h1>
-        {snap.nationalCases.length > 0 && <h1 className={'text-2xl text-green-500 text-center '}>
-            <span>{snap.nationalCases[snap.nationalCases.length - 1].date}</span>
-            <span>{snap.nationalCases[snap.nationalCases.length - 1]['Daily Cases']}</span>
-        </h1>}
+        {snap.nationalCases.length > 0 && <LatestData/>}
         { snap.nationalRegistration.length > 0 &&
                 <GraphSinglePage isNational={true}/>
         }

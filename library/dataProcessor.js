@@ -323,3 +323,70 @@ export const malaysiaSorter = (data, isAddPercentage=true, name) => {
     }
         return sortedDataNational
 }
+
+export const hospitalAndIcuNationalDataExtractor = (data, isIcu) => {
+    let sortedData
+
+    // check for empty entry at the end of file
+    let i = data.length
+    let j = 0
+
+    while (i !== 0) {
+        if (!!data[i - 1].date) {
+            break
+        }
+        ++j
+        --i
+    }
+
+    const totalStateNumber = 16 + j
+
+    const latestData = []
+
+    // 16 states
+    for (let i=1; i<(totalStateNumber); i++) {
+        latestData.push(data[data.length - (i+j)])
+    }
+
+    if (isIcu) {
+        const bedIcu = []
+        const covidIcuBed = []
+        const ventilator = []
+        const covidVentilator = []
+
+        for (let i=0; i<latestData.length; i++) {
+            bedIcu.push(parseInt(latestData[i].bed_icu_total))
+            covidIcuBed.push(parseInt(latestData[i].icu_covid) + parseInt(latestData[i].icu_pui))
+            ventilator.push(parseInt(latestData[i].vent))
+            covidVentilator.push(parseInt(latestData[i].vent_covid) + parseInt(latestData[i].vent_pui))
+        }
+
+        const totalBedIcu = bedIcu.reduce((a, b) => a + b, 0)
+        const totalCovidIcuBed = covidIcuBed.reduce((a, b) => a + b, 0)
+        const totalVentilator = ventilator.reduce((a, b) => a + b, 0)
+        const totalCovidVentilator = covidVentilator.reduce((a, b) => a + b, 0)
+
+        const covidIcuPercentage = totalCovidIcuBed / totalBedIcu * 100
+        const covidVentilatorPercentage = totalCovidVentilator / totalVentilator * 100
+
+        const dataIcuLatest = {date: latestData[0].date, 'Covid ICU': covidIcuPercentage, 'Covid Ventilator': covidVentilatorPercentage}
+
+        sortedData = dataIcuLatest
+    } else {
+        const beds = []
+        const covidBeds = []
+
+        for (let i=0; i<latestData.length; i++) {
+            beds.push(parseInt(latestData[i].beds_noncrit))
+            covidBeds.push(parseInt(latestData[i].hosp_covid) + parseInt(latestData[i].hosp_pui))
+        }
+
+        const totalBeds = beds.reduce((a,b) => a + b, 0 )
+        const totalCovidBeds = covidBeds.reduce((a,b) => a + b, 0 )
+
+        const dataHospitalisationLatest = {date: latestData[0].date, 'Covid Hospitalisation': totalCovidBeds/totalBeds*100}
+
+        sortedData = dataHospitalisationLatest
+    }
+    return sortedData
+}
