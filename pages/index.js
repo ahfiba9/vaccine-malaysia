@@ -35,6 +35,8 @@ export default function Home({
         nationalDeaths,
        ])
 
+    // console.log(snap.nationalCases[nationalCases.length - 1])
+
   return (
     <>
       <Head>
@@ -44,9 +46,11 @@ export default function Home({
         <LoaderComponent />
         <h1 className={'text-2xl text-green-500 text-center '}>
             <span>National Data</span>
-            <span>{snap.nationalCases[nationalCases.length-1].date}</span>
-            <span>{snap.nationalCases[nationalCases.length-1]['Daily Cases']}</span>
         </h1>
+        {snap.nationalCases.length > 0 && <h1 className={'text-2xl text-green-500 text-center '}>
+            <span>{snap.nationalCases[snap.nationalCases.length - 1].date}</span>
+            <span>{snap.nationalCases[snap.nationalCases.length - 1]['Daily Cases']}</span>
+        </h1>}
         { snap.nationalRegistration.length > 0 &&
                 <GraphSinglePage isNational={true}/>
         }
