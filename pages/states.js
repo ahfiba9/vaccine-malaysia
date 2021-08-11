@@ -80,9 +80,6 @@ export default function States({
                 </div>
                     </>
             }
-            <div className={'flex justify-center mt-5'}>
-                <LoaderComponent/>
-            </div>
         </>
     )
 }
