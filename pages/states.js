@@ -80,14 +80,11 @@ export default function States({
                 </div>
                     </>
             }
-            <div className={'flex justify-center mt-5'}>
-                <LoaderComponent/>
-            </div>
         </>
     )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
     try {
         // vaccination data
         const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)

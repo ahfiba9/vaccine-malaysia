@@ -53,7 +53,7 @@ export default function Home({
 }
 
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
     try {
         // vaccination data
         const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
