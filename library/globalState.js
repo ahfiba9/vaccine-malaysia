@@ -39,7 +39,10 @@ export const stateArray = [
     'W.P. Putrajaya',
 ]
 
-
+export const API_NAME = {
+    NATIONAL: 'national',
+    STATES: 'states'
+}
 
 export const malaysiaPopulation = {
     'Johor':{

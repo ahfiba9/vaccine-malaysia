@@ -271,7 +271,6 @@ export const malaysiaSorter = (data, isAddPercentage=true, name) => {
     //iterate the data and move it to each state
     let i = 0
     while (i < dataLength) {
-
         const currentData = data[i]
 
         if (!currentData.date) break
@@ -296,8 +295,6 @@ export const malaysiaSorter = (data, isAddPercentage=true, name) => {
                 'Dose 2': dose2Percentage,
             }
         } else {
-
-
             if (addToRecord) {
                 if (changeToNumber) {
                     let dailyDeaths
