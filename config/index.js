@@ -1,9 +1,7 @@
 let serverUrl = 'http://localhost:3000'
 
-if (process.env.NODE_ENV === 'preview') {
-    serverUrl = 'https://staging-vaccine-malaysia.vercel.app/'
-} else if (process.env.NODE_ENV === 'production') {
-    serverUrl = 'https://vaccine-malaysia.vercel.app/'
+if (process.env.NODE_ENV === 'production') {
+    serverUrl = 'https://vaccine-malaysia.vercel.app'
 }
 
 export const server = serverUrl
