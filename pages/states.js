@@ -1,12 +1,8 @@
 import Head from 'next/head'
 
-import {getApi} from "../library/axios";
-import {readString} from "react-papaparse";
-import {citfBaseUrl, kkmBaseUrl} from "../config";
 import {useEffect} from "react";
 import {API_NAME, globalState, stateArray} from "../library/globalState";
 import {useSnapshot} from "valtio";
-import {hospitalSorter, stateSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
 import {Graph} from "../components/Graph";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
