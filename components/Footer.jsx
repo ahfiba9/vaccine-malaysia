@@ -9,8 +9,8 @@ const Footer = () => {
             <div className="sm:flex mb-4 justify-between">
                 <div>
                     <p className="text-black font-sans leading-normal">All raw data is courtesy from MOH and CITF Malaysia </p>
-                    <p className="text-black font-sans leading-normal">© 2021 Ahmad Fikri Baharan </p>
-                    <p className="text-black font-sans leading-normal">v {versionNumber} </p>
+                    <p className="text-black font-sans leading-normal"><span className={'pr-5'}>© 2021 Ahmad Fikri Baharan </span><span className={'text-gray-500'}>v{versionNumber}</span></p>
+
                 </div>
                     <button
                         onClick={() => router.push('https://www.linkedin.com/in/ahmad-fikri-baharan/')}
