@@ -6,3 +6,5 @@ export const getApi = async (url) => {
 
     return data
 }
+
+export const fetcher = (...args) => fetch(...args).then(res => res)

@@ -11,9 +11,10 @@ import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
 import LoaderComponent from "../components/LoaderChecker";
 import {LatestData} from "../components/LatestData";
+import {useNationalVaccinationData} from "../library/nationalApiCall";
 
 export default function Home({
-                                 nationalVaccination,
+                                 nationalVaccinationProps,
                                  nationalCases,
                                  nationalDeaths,
                                  nationalRegistration,
@@ -22,8 +23,14 @@ export default function Home({
 
     const snap = useSnapshot(globalState)
 
+    const { nationalVaccination, isLoading, isError } =useNationalVaccinationData()
+
+    console.log('test swr = ', nationalVaccination)
+    console.log('test swr2 = ', isLoading)
+    console.log('test swr 3= ', isError)
+
     useEffect(() => {
-        globalState.nationalVax = malaysiaSorter(nationalVaccination.data)
+        globalState.nationalVax = malaysiaSorter(nationalVaccinationProps.data)
         globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'cases')
         globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, 'death')
         globalState.nationalRegistration = vaxRegistrationProcessor(nationalRegistration.data, true)
@@ -57,7 +64,7 @@ export const getServerSideProps = async () => {
     try {
         // vaccination data
         const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
-        const nationalVaccination = readString(dataVaxNational, {header: true})
+        const nationalVaccinationProps = readString(dataVaxNational, {header: true})
 
         // registration data
         const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
@@ -73,7 +80,7 @@ export const getServerSideProps = async () => {
 
         return {
             props : {
-                nationalVaccination,
+                nationalVaccinationProps,
                 nationalCases,
                 nationalDeaths,
                 nationalRegistration
