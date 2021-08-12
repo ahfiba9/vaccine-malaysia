@@ -1,6 +1,12 @@
-const dev = process.env.NODE_ENV !== 'production'
+let serverUrl = 'http://localhost:3000'
 
-export const server = dev ? 'http://localhost:3000' : 'https://yourwebsite.com'
+if (process.env.NODE_ENV === 'preview') {
+    serverUrl = 'https://staging-vaccine-malaysia.vercel.app/'
+} else if (process.env.NODE_ENV === 'production') {
+    serverUrl = 'https://vaccine-malaysia.vercel.app/'
+}
+
+export const server = serverUrl
 export const citfBaseUrl = 'https://github.com/CITF-Malaysia/citf-public/raw/main'
 export const kkmBaseUrl =  'https://github.com/MoH-Malaysia/covid19-public/raw/main/epidemic'
 export const startVaccineYear = 2021

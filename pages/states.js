@@ -4,44 +4,46 @@ import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";
 import {citfBaseUrl, kkmBaseUrl} from "../config";
 import {useEffect} from "react";
-import {globalState, stateArray } from "../library/globalState";
+import {API_NAME, globalState, stateArray} from "../library/globalState";
 import {useSnapshot} from "valtio";
 import {hospitalSorter, stateSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
 import {Graph} from "../components/Graph";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
 import LoaderComponent from "../components/LoaderChecker";
+import {useVaccinationApi} from "../library/customHooks/useVaccinationApi";
+import {useCasesApi} from "../library/customHooks/useCasesApi";
+import {useDeathsApi} from "../library/customHooks/useDeathsApi";
+import {useRegistrationApi} from "../library/customHooks/useRegistrationApi";
+import {useHospitalApi} from "../library/customHooks/useHospitalApi";
+import {useIcuApi} from "../library/customHooks/useIcuApi";
+import Loader from "../components/Loader";
 
-export default function States({
-                                 stateVaccination,
-                                 stateCases,
-                                 stateDeaths,
-                                 hospitalData,
-                                 icuData,
-    stateRegistration
-                             }
-) {
+export default function States() {
 
     const snap = useSnapshot(globalState)
-    const { singleGraphName } = snap
+    const { singleGraphName, stateVax, stateCases, stateDeaths, stateHospital, stateIcu, stateRegistration } = snap
+
+    const { vaccinationData, isLoadingVaccinationData, isErrorVaccinationData } = useVaccinationApi(API_NAME.STATES)
+    const { newCasesData, isLoadingCasesData, isErrorCasesData } = useCasesApi(API_NAME.STATES)
+    const { newDeathsData, isLoadingDeathsData, isErrorDeathsData } = useDeathsApi(API_NAME.STATES)
+    const { registrationData, isLoadingRegistrationData, isErrorRegistrationData } = useRegistrationApi(API_NAME.STATES)
+    const { hospitalData, isLoadingHospitalData, isErrorHospitalData } = useHospitalApi()
+    const { icuData, isLoadingIcuData, isErrorIcuData } = useIcuApi()
+
 
     useEffect(() => {
-        globalState.stateVax = stateSorter(stateVaccination.data, true)
-        globalState.stateCases = stateSorter(stateCases.data, false, 'cases')
-        globalState.stateDeaths = stateSorter(stateDeaths.data,false, 'deaths')
-        globalState.stateHospital = hospitalSorter(hospitalData.data, false)
-        globalState.stateIcu = hospitalSorter(icuData.data, true)
-        globalState.stateRegistration = vaxRegistrationProcessor(stateRegistration.data)
+        globalState.stateVax = vaccinationData
+        globalState.stateCases = newCasesData
+        globalState.stateDeaths = newDeathsData
+        globalState.stateHospital = hospitalData
+        globalState.stateIcu = icuData
+        globalState.stateRegistration = registrationData
 
 
-    }, [stateVaccination,
-        stateCases,
-        stateDeaths,
-        hospitalData,
-        icuData,
-        stateRegistration
-    ])
+    }, [hospitalData, icuData, newCasesData, newDeathsData, registrationData, vaccinationData])
 
+    const showGraph = !!stateVax && stateCases && stateDeaths && stateHospital && stateIcu && stateRegistration
 
     return (
         <>
@@ -50,8 +52,9 @@ export default function States({
                 <meta name={'keywords'} content={'covid tracker , vaccine tracker, CITF, KKM, MOH, ICU, Hospital, ventilator'}/>
             </Head>
             <LoaderComponent />
+            {!showGraph && <div className={`flex justify-center py-10`}> <Loader/></div>}
 
-            { Object.keys(snap.stateVax).length > 0 && !singleGraphName &&
+            { showGraph && Object.keys(snap.stateVax).length > 0 && !singleGraphName &&
             <div className={"grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 md:gap-x-10 xl-grid-cols-4 gap-y-10 gap-x-6"}>
                 {stateArray.map((state) => (
                     <Graph key={state} stateName={state} />
@@ -82,45 +85,4 @@ export default function States({
             }
         </>
     )
-}
-
-export const getServerSideProps = async () => {
-    try {
-        // vaccination data
-        const dataVaxState = await getApi(`${citfBaseUrl}/vaccination/vax_state.csv`)
-        const stateVaccination = readString(dataVaxState, {header: true})
-
-        // registration data
-        const dataVaxRegState = await getApi(`${citfBaseUrl}/registration/vaxreg_state.csv`)
-        const stateRegistration = readString(dataVaxRegState, {header: true})
-
-        // cases data
-        const stateCasesData = await getApi(`${kkmBaseUrl}/cases_state.csv`)
-        const stateCases = readString(stateCasesData, {header: true})
-
-        // deaths data
-        const stateDeathsData = await getApi(`${kkmBaseUrl}/deaths_state.csv`)
-        const stateDeaths = readString(stateDeathsData, {header: true})
-
-        // hospital and icu data
-        const hospitalDataRaw = await getApi(`${kkmBaseUrl}/hospital.csv`)
-        const icuDataRaw = await getApi(`${kkmBaseUrl}/icu.csv`)
-
-        const hospitalData = readString(hospitalDataRaw, {header: true})
-        const icuData = readString(icuDataRaw, {header: true})
-
-
-        return {
-            props : {
-                stateVaccination,
-                stateCases,
-                stateDeaths,
-                hospitalData,
-                icuData,
-                stateRegistration
-            }
-        }
-    } catch {
-        return { notFound: true}
-    }
 }

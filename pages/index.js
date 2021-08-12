@@ -4,36 +4,43 @@ import {getApi} from "../library/axios";
 import {readString} from "react-papaparse";
 import {citfBaseUrl, kkmBaseUrl} from "../config";
 import {useEffect} from "react";
-import {globalState } from "../library/globalState";
+import {API_NAME, globalState} from "../library/globalState";
 import {useSnapshot} from "valtio";
 import {malaysiaSorter, vaxRegistrationProcessor} from "../library/dataProcessor";
 import {GraphSinglePage} from "../components/GraphSinglePage";
 import {GraphFilter} from "../components/GraphFilter";
 import LoaderComponent from "../components/LoaderChecker";
 import {LatestData} from "../components/LatestData";
+import { useVaccinationApi} from "../library/customHooks/useVaccinationApi";
+import {useCasesApi} from "../library/customHooks/useCasesApi";
+import {useDeathsApi} from "../library/customHooks/useDeathsApi";
+import {useRegistrationApi} from "../library/customHooks/useRegistrationApi";
+import Loader from "../components/Loader";
 
-export default function Home({
-                                 nationalVaccination,
-                                 nationalCases,
-                                 nationalDeaths,
-                                 nationalRegistration,
-                             }
-) {
+export default function Home() {
 
     const snap = useSnapshot(globalState)
 
-    useEffect(() => {
-        globalState.nationalVax = malaysiaSorter(nationalVaccination.data)
-        globalState.nationalCases = malaysiaSorter(nationalCases.data, false, 'cases')
-        globalState.nationalDeath = malaysiaSorter(nationalDeaths.data, false, 'death')
-        globalState.nationalRegistration = vaxRegistrationProcessor(nationalRegistration.data, true)
-    }, [nationalRegistration,
-        nationalVaccination,
-        nationalCases,
-        nationalDeaths,
-       ])
+    const {nationalVax, nationalCases, nationalDeath, nationalRegistration} = snap
 
-  return (
+    const { vaccinationData, isLoadingVaccinationData, isErrorVaccinationData } = useVaccinationApi(API_NAME.NATIONAL)
+    const { newCasesData, isLoadingCasesData, isErrorCasesData } = useCasesApi(API_NAME.NATIONAL)
+    const { newDeathsData, isLoadingDeathsData, isErrorDeathsData } = useDeathsApi(API_NAME.NATIONAL)
+    const { registrationData, isLoadingRegistrationData, isErrorRegistrationData } = useRegistrationApi(API_NAME.NATIONAL)
+
+    useEffect(() => {
+
+        globalState.nationalVax = vaccinationData
+        globalState.nationalCases = newCasesData
+        globalState.nationalDeath = newDeathsData
+        globalState.nationalRegistration = registrationData
+
+    }, [vaccinationData, newCasesData, newDeathsData, registrationData])
+
+    const showGraph = nationalDeath && nationalVax && nationalRegistration && nationalCases
+
+
+    return (
     <>
       <Head>
           <title>Covid In Malaysia</title>
@@ -43,43 +50,12 @@ export default function Home({
         <h1 className={'text-2xl text-green-500 text-center '}>
             <span>National Data</span>
         </h1>
-        {snap.nationalCases.length > 0 && <LatestData/>}
-        { snap.nationalRegistration.length > 0 &&
+        {!showGraph && <div className={`flex justify-center py-10`}> <Loader/></div>}
+        {showGraph && snap.nationalCases.length > 0 && <LatestData/>}
+        { showGraph && snap.nationalCases.length > 0 &&
                 <GraphSinglePage isNational={true}/>
         }
         <GraphFilter isNational={true}/>
     </>
   )
-}
-
-
-export const getServerSideProps = async () => {
-    try {
-        // vaccination data
-        const dataVaxNational = await getApi(`${citfBaseUrl}/vaccination/vax_malaysia.csv`)
-        const nationalVaccination = readString(dataVaxNational, {header: true})
-
-        // registration data
-        const dataVaxRegNational = await getApi(`${citfBaseUrl}/registration/vaxreg_malaysia.csv`)
-        const nationalRegistration = readString(dataVaxRegNational, {header: true})
-
-        // cases data
-        const nationalCasesData = await getApi(`${kkmBaseUrl}/cases_malaysia.csv`)
-        const nationalCases = readString(nationalCasesData, {header: true})
-
-        // deaths data
-        const nationalDeathsData = await getApi(`${kkmBaseUrl}/deaths_malaysia.csv`)
-        const nationalDeaths = readString(nationalDeathsData, {header: true})
-
-        return {
-            props : {
-                nationalVaccination,
-                nationalCases,
-                nationalDeaths,
-                nationalRegistration
-            }
-        }
-    } catch {
-        return { notFound: true}
-    }
 }
