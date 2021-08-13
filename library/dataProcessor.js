@@ -137,7 +137,7 @@ export const hospitalSorter = (data, isIcu) => {
                 const icuCovidAndPui = parseInt(currentData.icu_covid) + parseInt(currentData.icu_pui)
                 const icuCovidPuiPercentage = icuCovidAndPui / parseInt(currentData.beds_icu_total) * 100
                 const icuNonCovidPercentage = parseInt(currentData.icu_noncovid) / parseInt(currentData.beds_icu_total) * 100
-                const icuUsagePercentage = (icuCovidAndPui + parseInt(currentData.icu_noncovid)) / parseInt(currentData.bed_icu_total) * 100
+                const icuUsagePercentage = (icuCovidAndPui + parseInt(currentData.icu_noncovid)) / parseInt(currentData.beds_icu_total) * 100
 
                 const ventTotal = parseInt(currentData.vent) + parseInt(currentData.vent_port)
                 const ventCovidAndPui = parseInt(currentData.vent_covid) + parseInt(currentData.vent_pui)
