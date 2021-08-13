@@ -135,8 +135,8 @@ export const hospitalSorter = (data, isIcu) => {
         if (addToRecord) {
             if (isIcu) {
                 const icuCovidAndPui = parseInt(currentData.icu_covid) + parseInt(currentData.icu_pui)
-                const icuCovidPuiPercentage = icuCovidAndPui / parseInt(currentData.bed_icu_total) * 100
-                const icuNonCovidPercentage = parseInt(currentData.icu_noncovid) / parseInt(currentData.bed_icu_total) * 100
+                const icuCovidPuiPercentage = icuCovidAndPui / parseInt(currentData.beds_icu_total) * 100
+                const icuNonCovidPercentage = parseInt(currentData.icu_noncovid) / parseInt(currentData.beds_icu_total) * 100
                 const icuUsagePercentage = (icuCovidAndPui + parseInt(currentData.icu_noncovid)) / parseInt(currentData.bed_icu_total) * 100
 
                 const ventTotal = parseInt(currentData.vent) + parseInt(currentData.vent_port)
@@ -352,7 +352,7 @@ export const hospitalAndIcuNationalDataExtractor = (data, isIcu) => {
         const covidVentilator = []
 
         for (let i=0; i<latestData.length; i++) {
-            bedIcu.push(parseInt(latestData[i].bed_icu_total))
+            bedIcu.push(parseInt(latestData[i].beds_icu_total))
             covidIcuBed.push(parseInt(latestData[i].icu_covid) + parseInt(latestData[i].icu_pui))
             ventilator.push(parseInt(latestData[i].vent))
             covidVentilator.push(parseInt(latestData[i].vent_covid) + parseInt(latestData[i].vent_pui))
