@@ -56,9 +56,9 @@ export const stateSorter = (data, addPercentage = false, dataType) => {
             if (addPercentage) {
                 updatedData = {
                     ...updatedData,
-                    'Dose 1': parseInt(updatedData.dose1_cumul) / validPopulation * 100,
-                    'Dose 2': parseInt(updatedData.dose2_cumul) / validPopulation * 100,
-                    'Combined total': parseInt(updatedData.total_cumul) / validPopulation * 100,
+                    'Dose 1': parseInt(updatedData.cumul_partial) / validPopulation * 100,
+                    'Dose 2': parseInt(updatedData.cumul_full) / validPopulation * 100,
+                    'Combined total': parseInt(updatedData.cumul) / validPopulation * 100,
                 }
             } else {
                 if (changeToNumber) {
@@ -282,8 +282,8 @@ export const malaysiaSorter = (data, isAddPercentage=true, name) => {
         if (isAddPercentage) {
             const populationData = malaysiaPopulation["Malaysia"].total
 
-            const dataDose1 = parseInt(currentData.dose1_cumul)
-            const dataDose2 = parseInt(currentData.dose2_cumul)
+            const dataDose1 = parseInt(currentData.cumul_partial)
+            const dataDose2 = parseInt(currentData.cumul_full)
 
             const dose1Percentage = dataDose1 / populationData * 100
             const dose2Percentage = dataDose2 / populationData * 100
