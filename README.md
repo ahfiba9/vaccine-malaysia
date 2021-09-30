@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a side project when we are in the middle of covid-19 project in Malaysia. The website can be accessed in here https://vaccine-malaysia.vercel.app/
 
 ## Getting Started
 
